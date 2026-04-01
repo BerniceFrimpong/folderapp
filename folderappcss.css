@@ -1,0 +1,58 @@
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #4b0082, #0000ff);
+  color: white;
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+}
+
+.app {
+  background: white;
+  color: black;
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+}
+
+h1 {
+  text-align: center;
+}
+
+#path {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.controls {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+.controls input {
+  flex: 1;
+  padding: 5px;
+}
+
+button {
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  background: #f2f2f2;
+  padding: 8px;
+  margin-bottom: 5px;
+  border-radius: 6px;
+}
+
+.item span {
+  cursor: pointer;
+}
+
+.actions button {
+  margin-left: 5px;
+}
