@@ -1,58 +1,133 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #4b0082, #0000ff);
-  color: white;
+  height: 100vh;
+  background: radial-gradient(circle at top, #0f172a, #020617);
   display: flex;
   justify-content: center;
-  padding-top: 50px;
+  align-items: center;
 }
 
+/* APP */
 .app {
-  background: white;
-  color: black;
-  padding: 20px;
-  border-radius: 12px;
-  width: 400px;
+  width: 95%;
+  height: 90vh;
+  display: flex;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 60px rgba(34,197,94,0.15);
 }
 
-h1 {
-  text-align: center;
+/* SIDEBAR */
+.sidebar {
+  width: 200px;
+  padding: 20px;
+  border-right: 5px solid rgba(255,255,255,0.1);
+}
+
+.logo {
+  color: #22c55e;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TOPBAR */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
 #path {
-  margin-bottom: 10px;
-  font-weight: bold;
+  color: #22c55e;
 }
 
-.controls {
+#search {
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: white;
+}
+
+/* ACTIONS */
+.actions {
   display: flex;
-  gap: 5px;
+  gap: 10px;
   margin-bottom: 15px;
 }
 
-.controls input {
+.actions input {
   flex: 1;
-  padding: 5px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
 }
 
 button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
-  padding: 5px 10px;
+  font-weight: 500;
+  background: linear-gradient(135deg, #6366f1, #22c55e); /* your original style */
+  color: white;
+  transition: 0.2s;
 }
 
+button:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 100px);
+  gap: 20px;
+}
+
+/* ITEM */
 .item {
-  display: flex;
-  justify-content: space-between;
-  background: #f2f2f2;
-  padding: 8px;
-  margin-bottom: 5px;
-  border-radius: 6px;
+  text-align: center;
 }
 
-.item span {
-  cursor: pointer;
+.icon {
+  font-size: 42px;
+  padding: 10px;
+  border-radius: 12px;
+  transition: 0.2s;
 }
 
-.actions button {
-  margin-left: 5px;
+/* SELECT */
+.icon.selected {
+  border: 2px solid #22c55e;
+  box-shadow: 0 0 15px #22c55e;
+}
+
+/* DRAG HOVER */
+.icon.drag-over {
+  background: rgba(34,197,94,0.2);
+}
+
+/* NAME */
+.name {
+  margin-top: 5px;
+  color: #cbd5f5;
+  font-size: 13px;
 }

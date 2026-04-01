@@ -1,32 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Folder App</title>
-  <link rel="stylesheet" href="folderappcss.css">
+<meta charset="UTF-8">
+<title>Neo File System</title>
+<link rel="stylesheet" href="folderappcss.css">
 </head>
 <body>
 
-  <div class="app">
-    <h1>📁 Folder App</h1>
+<div class="app">
 
-    <!-- Path -->
-    <div id="path"></div>
-
-    <!-- Controls -->
-    <div class="controls">
-      <input type="text" id="nameInput" placeholder="Enter name" />
-      <button onclick="createItem('folder')">📁 New Folder</button>
-      <button onclick="createItem('file')">📄 New File</button>
-    </div>
-
-    <!-- File List -->
-    <div id="fileList"></div>
-
-    <!-- Back Button -->
-    <button id="backBtn" onclick="goBack()">⬅ Back</button>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo" id="homeBtn">⚡ My Files</div>
   </div>
 
-  <script src="folderappjs.js"></script>
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOP -->
+    <div class="topbar">
+      <div id="path">⚡ My Files</div>
+      <input type="text" id="search" placeholder="Search..." />
+    </div>
+
+    <!-- ACTION BAR -->
+    <div class="actions">
+      <input type="text" id="nameInput" placeholder="New item..." />
+      <button id="createFolder">+ Folder</button>
+      <button id="createFile">+ File</button>
+      <button id="deleteBtn">Delete</button>
+      <button id="backBtn">Back</button>
+    </div>
+
+    <!-- GRID -->
+    <div id="fileList" class="grid"></div>
+
+  </div>
+</div>
+
+<script src="folderappjs.js"></script>
 </body>
 </html>

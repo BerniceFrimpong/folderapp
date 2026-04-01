@@ -1,71 +1,138 @@
-// Root structure
-let fileSystem = {
-  name: "Home",
+let fileSystem = JSON.parse(localStorage.getItem("fileSystem")) || {
+  name: "My Files",
   type: "folder",
   children: []
 };
 
-// Navigation stack
 let currentFolder = fileSystem;
 let pathStack = [];
+let selectedIndex = null;
 
-// Render everything
+const fileList = document.getElementById("fileList");
+const pathDiv = document.getElementById("path");
+const nameInput = document.getElementById("nameInput");
+const searchInput = document.getElementById("search");
+
+// SAVE
+function saveData() {
+  localStorage.setItem("fileSystem", JSON.stringify(fileSystem));
+}
+
+// RENDER
 function render() {
-  const fileList = document.getElementById("fileList");
-  const pathDiv = document.getElementById("path");
-
   fileList.innerHTML = "";
 
-  // Show path
-  let pathNames = ["Home", ...pathStack.map(f => f.name)];
-  pathDiv.innerText = pathNames.join(" > ");
+  pathDiv.innerText =
+    currentFolder === fileSystem
+      ? "⚡ My Files"
+      : "⚡ My Files > " + pathStack.map(f => f.name).join(" > ");
 
-  // Show items
+  const filter = searchInput.value.toLowerCase();
+
   currentFolder.children.forEach((item, index) => {
+    if (!item.name.toLowerCase().includes(filter)) return;
+
     const div = document.createElement("div");
     div.className = "item";
 
-    const name = document.createElement("span");
-    name.innerText = item.type === "folder" ? "📁 " + item.name : "📄 " + item.name;
+    const icon = document.createElement("div");
+    icon.className = "icon";
+    icon.textContent = item.type === "folder" ? "📁" : "📄";
+    icon.draggable = true;
 
-    // Open folder
-    if (item.type === "folder") {
-      name.onclick = () => openFolder(index);
+    const name = document.createElement("div");
+    name.className = "name";
+    name.textContent = item.name;
+
+    // SELECT
+    icon.onclick = () => {
+      selectedIndex = index;
+      render();
+    };
+
+    // OPEN FOLDER
+    icon.ondblclick = () => {
+      if (item.type === "folder") {
+        pathStack.push(currentFolder);
+        currentFolder = item;
+        selectedIndex = null;
+        render();
+      }
+    };
+
+    // DRAG START
+    icon.ondragstart = (e) => {
+      e.dataTransfer.setData("index", index);
+    };
+
+    // DRAG OVER
+    icon.ondragover = (e) => {
+      e.preventDefault();
+      if (item.type === "folder") {
+        icon.classList.add("drag-over");
+      }
+    };
+
+    icon.ondragleave = () => {
+      icon.classList.remove("drag-over");
+    };
+
+    // DROP INTO FOLDER
+    icon.ondrop = (e) => {
+      e.preventDefault();
+      icon.classList.remove("drag-over");
+
+      const dragIndex = e.dataTransfer.getData("index");
+      if (dragIndex == index) return;
+
+      const draggedItem = currentFolder.children[dragIndex];
+
+      if (item.type === "folder") {
+        currentFolder.children.splice(dragIndex, 1);
+        item.children.push(draggedItem);
+
+        saveData();
+        render();
+      }
+    };
+
+    // RENAME
+    name.ondblclick = (e) => {
+      e.stopPropagation();
+
+      const input = document.createElement("input");
+      input.value = item.name;
+
+      name.replaceWith(input);
+      input.focus();
+
+      input.onblur = () => {
+        item.name = input.value || item.name;
+        saveData();
+        render();
+      };
+
+      input.onkeydown = (e) => {
+        if (e.key === "Enter") input.blur();
+      };
+    };
+
+    if (selectedIndex === index) {
+      icon.classList.add("selected");
     }
 
-    const actions = document.createElement("div");
-    actions.className = "actions";
-
-    // Rename
-    const renameBtn = document.createElement("button");
-    renameBtn.innerText = "✏";
-    renameBtn.onclick = () => renameItem(index);
-
-    // Delete
-    const deleteBtn = document.createElement("button");
-    deleteBtn.innerText = "🗑";
-    deleteBtn.onclick = () => deleteItem(index);
-
-    actions.appendChild(renameBtn);
-    actions.appendChild(deleteBtn);
-
+    div.appendChild(icon);
     div.appendChild(name);
-    div.appendChild(actions);
-
     fileList.appendChild(div);
   });
 
-  // Back button visibility
-  document.getElementById("backBtn").style.display =
-    pathStack.length === 0 ? "none" : "block";
+  saveData();
 }
 
-// Create file/folder
+// CREATE
 function createItem(type) {
-  const input = document.getElementById("nameInput");
-  const name = input.value.trim();
-
-  if (!name) return alert("Enter a name");
+  const name = nameInput.value.trim();
+  if (!name) return;
 
   currentFolder.children.push({
     name,
@@ -73,37 +140,43 @@ function createItem(type) {
     children: type === "folder" ? [] : undefined
   });
 
-  input.value = "";
+  nameInput.value = "";
   render();
 }
 
-// Open folder
-function openFolder(index) {
-  pathStack.push(currentFolder);
-  currentFolder = currentFolder.children[index];
-  render();
-}
-
-// Go back
-function goBack() {
+// BACK
+document.getElementById("backBtn").onclick = () => {
+  if (pathStack.length === 0) return;
   currentFolder = pathStack.pop();
   render();
-}
+};
 
-// Delete
-function deleteItem(index) {
-  currentFolder.children.splice(index, 1);
+// HOME
+document.getElementById("homeBtn").onclick = () => {
+  currentFolder = fileSystem;
+  pathStack = [];
   render();
-}
+};
 
-// Rename
-function renameItem(index) {
-  const newName = prompt("Enter new name:");
-  if (!newName) return;
+// BUTTONS
+document.getElementById("createFolder").onclick = () => createItem("folder");
+document.getElementById("createFile").onclick = () => createItem("file");
 
-  currentFolder.children[index].name = newName;
+document.getElementById("deleteBtn").onclick = () => {
+  if (selectedIndex === null) return;
+
+  currentFolder.children.splice(selectedIndex, 1);
+  selectedIndex = null;
   render();
-}
+};
 
-// Initial render
+// ENTER KEY
+nameInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") createItem("file");
+});
+
+// SEARCH
+searchInput.addEventListener("input", render);
+
+// INIT
 render();
